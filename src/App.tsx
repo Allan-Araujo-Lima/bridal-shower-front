@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import { Home } from './pages/home/index'
 import { Layout } from './pages/layout'
+import "../globals/index.css"
 
 function App() {
 
