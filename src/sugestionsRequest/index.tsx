@@ -14,3 +14,12 @@ export const GetAllSugestions = async () => {
         }
     }
 }
+
+export const UpdateSugestion = async (id: string, name: string | null) => {
+    try {
+        const response = await api.patch(`/sugestions/${id}`, name)
+        return response.data;
+    } catch (error: any) {
+        console.log(error)
+    }
+}
