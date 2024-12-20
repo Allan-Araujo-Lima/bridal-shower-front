@@ -1,7 +1,6 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { GetAllSugestions, UpdateSugestion } from "@/sugestionsRequest";
 import { Label } from "@radix-ui/react-label";
@@ -11,37 +10,55 @@ type ISugestion = {
     id: string;
     name: string;
     description: string;
-    categoty: string;
+    category: string;
     guest: string;
 };
 
 export const Home = () => {
     const [sugestions, setSugestions] = useState<ISugestion[]>([]);
-    const [name, setName] = useState(false);
+    const [filteredSugestions, setFilteredSugestions] = useState<ISugestion[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [selectedCategory, setSelectedCategory] = useState<string>("");
+    const [userName, setUserName] = useState<string>();
 
     useEffect(() => {
         const fetchSugestions = async () => {
             try {
                 const response = await GetAllSugestions();
                 setSugestions(response);
+                setFilteredSugestions(response);
             } catch (error) {
                 console.log("Erro ao buscar sugestões:", error);
             }
         };
-
         fetchSugestions();
-    }, []);
+    }, [userName]);
 
-    const updateSugestion = (id: string, name: string) => {
-        console.log(id)
-        if (localStorage.getItem('name')) {
-            UpdateSugestion(id, localStorage.getItem('name'))
-        } else {
-            localStorage.setItem('name', name)
-            UpdateSugestion(id, localStorage.getItem('name'))
+    useEffect(() => {
+        const filtered = sugestions.filter((item) => {
+            const matchesName = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesCategory = selectedCategory ? item.category === selectedCategory : true;
+            return matchesName && matchesCategory;
+        });
+        setFilteredSugestions(filtered);
+    }, [searchQuery, selectedCategory, sugestions]);
+
+    const updateSugestion = async (id: string, name: string | undefined) => {
+        try {
+            const userName = localStorage.getItem("name") || name!;
+            if (!localStorage.getItem("name")) localStorage.setItem("name", userName);
+
+            await UpdateSugestion(id, userName);
+
+            setSugestions((prev) =>
+                prev.map((item) =>
+                    item.id === id ? { ...item, guest: userName } : item
+                )
+            );
+        } catch (error) {
+            console.error("Erro ao atualizar sugestão:", error);
         }
-        setName(true)
-    }
+    };
 
     return (
         <main className="p-6 text-[#203165]">
@@ -57,8 +74,32 @@ export const Home = () => {
                 </p>
             </section>
 
+            <section className="mb-6">
+                <div className="flex flex-col justify-center md:flex-row items-center gap-4">
+                    <Input
+                        type="text"
+                        placeholder="Busque por nome do presente..."
+                        className="w-full md:w-1/3"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+
+                    <select
+                        className="w-full md:w-1/3 p-2 border border-gray-300 rounded-md"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                        <option value="">Todas as categorias</option>
+                        <option value="Cozinha">Cozinha</option>
+                        <option value="Área de Serviço">Área de Serviço</option>
+                        <option value="Quarto">Quarto</option>
+                        <option value="Banheiro">Banheiro</option>
+                    </select>
+                </div>
+            </section>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mx-auto max-w-7xl">
-                {sugestions.map((sugestion) => (
+                {filteredSugestions.map((sugestion) => (
                     <Card
                         key={sugestion.id}
                         className="shadow-lg rounded-lg overflow-hidden bg-white hover:scale-105 transition-transform duration-300 flex flex-col"
@@ -82,34 +123,44 @@ export const Home = () => {
                             <Dialog>
                                 <DialogTrigger asChild className="w-full h-fit">
                                     <Button
+                                        disabled={sugestion.guest ? true : false}
                                         variant="outline"
                                         className="w-full bg-[#4D5891] text-white font-medium py-2 rounded-md shadow-md hover:bg-[#3C4678] transition-colors duration-200"
                                     >
-                                        Quero presentear
+                                        {sugestion.guest ? "Já escolhido" : "Quero presentear"}
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-[425px]">
                                     <DialogHeader>
-                                        <DialogTitle>Digite o seu nome</DialogTitle>
+                                        <DialogTitle>{localStorage.getItem("name") ? "Confirmar o presente?" : "Digite seu nome completo"}</DialogTitle>
                                         <DialogDescription>
+                                            Item selecionado: <b>{sugestion.name}</b>
+                                            <br />
                                             Serve para reservamos nossa sugestão especialmente para você!
                                         </DialogDescription>
                                     </DialogHeader>
-                                    <div className="grid gap-4 py-4">
-                                        <div className="grid grid-cols-4 items-center gap-4">
-                                            <Label htmlFor="name" className="text-right">
-                                                Nome
-                                            </Label>
-                                            <Input id="name" className="col-span-3" />
-                                        </div>
-                                    </div>
+                                    {
+                                        !localStorage.getItem("name") ?
+                                            <div className="grid gap-4 py-4">
+                                                <div className="grid grid-cols-4 items-center gap-4">
+                                                    <Label htmlFor="name" className="text-left">
+                                                        Nome:
+                                                    </Label>
+                                                    <Input id="name" className="col-span-3" onChange={(e) => setUserName(e.target.value)} />
+                                                </div>
+                                            </div>
+                                            :
+                                            null
+                                    }
                                     <DialogFooter>
-                                        <Button
-                                            onClick={() => updateSugestion(sugestion.id, "Felca")}
-                                            className="w-full bg-[#4D5891] text-white font-medium py-2 rounded-md shadow-md hover:bg-[#3C4678] transition-colors duration-200"
-                                        >
-                                            Salvar sugestão
-                                        </Button>
+                                        <DialogClose>
+                                            <Button
+                                                onClick={() => updateSugestion(sugestion.id, userName)}
+                                                className="w-full bg-[#4D5891] text-white font-medium py-2 rounded-md shadow-md hover:bg-[#3C4678] transition-colors duration-200"
+                                            >
+                                                Salvar sugestão
+                                            </Button>
+                                        </DialogClose>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
@@ -117,7 +168,6 @@ export const Home = () => {
                     </Card>
                 ))}
             </div>
-
-        </main >
+        </main>
     );
 };

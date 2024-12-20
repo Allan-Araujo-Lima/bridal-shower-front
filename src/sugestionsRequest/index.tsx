@@ -17,7 +17,8 @@ export const GetAllSugestions = async () => {
 
 export const UpdateSugestion = async (id: string, name: string | null) => {
     try {
-        const response = await api.patch(`/sugestions/${id}`, name)
+        console.log(name, "Update")
+        const response = await api.patch(`/sugestions/${id}`, { guest: name })
         return response.data;
     } catch (error: any) {
         console.log(error)
