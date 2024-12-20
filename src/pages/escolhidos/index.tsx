@@ -1,6 +1,7 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { api } from "@/api/axios";
 
 type ISugestion = {
     id: string;
@@ -14,29 +15,17 @@ export const ChosenItemsPage = () => {
     const [chosenItems, setChosenItems] = useState<ISugestion[]>([]);
 
     useEffect(() => {
-        // Simula uma requisição para buscar os itens escolhidos
-        const fetchChosenItems = async () => {
-            // Simulação de resposta com dados do backend
-            const response: ISugestion[] = [
-                {
-                    id: "1",
-                    name: "Cesto de roupa suja fechado",
-                    description: "Cesto prático e fechado para armazenar roupas sujas de forma discreta.",
-                    category: "Área de Serviço",
-                    guest: "João Silva",
-                },
-                {
-                    id: "2",
-                    name: "Air fryer",
-                    description: "Fritadeira elétrica que utiliza ar quente para preparar alimentos mais saudáveis.",
-                    category: "Cozinha",
-                    guest: "Maria Souza",
-                },
-            ];
-            setChosenItems(response);
+        const guest = localStorage.getItem("name");
+        const fetchChosenItems = async (guest: string) => {
+            try {
+                const response = await api.get(`/sugestions/${guest}`);
+                setChosenItems(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar sugestões:", error);
+            }
         };
 
-        fetchChosenItems();
+        fetchChosenItems(guest!);
     }, []);
 
     return (
@@ -70,11 +59,6 @@ export const ChosenItemsPage = () => {
                                     {item.description}
                                 </CardDescription>
                             </CardHeader>
-                            <div className="p-4 text-center">
-                                <p className="text-gray-600 font-medium">
-                                    Reservado por: <span className="text-[#4D5891]">{item.guest}</span>
-                                </p>
-                            </div>
                         </Card>
                     ))
                 ) : (

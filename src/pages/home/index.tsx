@@ -74,6 +74,10 @@ export const Home = () => {
                 </p>
             </section>
 
+            <nav className="mb-6 text-center">
+                <a href="/escolhidos" className="text-[#4D5891] hover:underline text-xl">Ver meus presentes escolhidos</a>
+            </nav>
+
             <section className="mb-6">
                 <div className="flex flex-col justify-center md:flex-row items-center gap-4">
                     <Input
