@@ -150,7 +150,7 @@ export const Home = () => {
                                                     <Label htmlFor="name" className="text-left">
                                                         Nome:
                                                     </Label>
-                                                    <Input id="name" className="col-span-3" onChange={(e) => setUserName(e.target.value)} />
+                                                    <Input id="name" className="col-span-3" onChange={(e) => setUserName(e.target.value.toLowerCase())} />
                                                 </div>
                                             </div>
                                             :
