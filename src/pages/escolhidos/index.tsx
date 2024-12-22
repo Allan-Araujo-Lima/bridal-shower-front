@@ -5,6 +5,9 @@ import { api } from "@/api/axios";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+
 
 type ISugestion = {
     id: string;
@@ -35,11 +38,16 @@ export const ChosenItemsPage = () => {
     return (
         <main className="p-6 text-[#203165]">
             <section className="text-center mb-10">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#4D5891]">
-                    Presentes Escolhidos 🎁
-                </h1>
+                <div className="flex mb-4 w-full items-center justify-between">
+                    <Link to="/" className="text-[#4D5891] self-start hover:underline">
+                        <ArrowLeft />
+                    </Link>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#4D5891] mx-auto">
+                        Presentes Escolhidos 🎁
+                    </h1>
+                </div>
                 <p className="text-lg md:text-xl text-gray-700">
-                    Veja abaixo os itens que já foram reservados pelos convidados.
+                    Veja abaixo os itens que já foram reservados por você.
                 </p>
             </section>
             {
