@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { GetAllSugestions, UpdateSugestion } from "@/sugestionsRequest";
 import { Label } from "@radix-ui/react-label";
-import { LoaderCircle, Space } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type ISugestion = {
