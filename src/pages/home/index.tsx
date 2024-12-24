@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { GetAllSugestions, UpdateSugestion } from "@/sugestionsRequest";
 import { Label } from "@radix-ui/react-label";
+import { LoaderCircle, Space } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type ISugestion = {
@@ -106,7 +107,13 @@ export const Home = () => {
                 </div>
             </section>
 
-            {loading && <p className="text-center text-xl text-gray-500">Carregando sugestões, aguarde um momento...</p>}
+            {loading &&
+                <div className="flex justify-center items-center">
+                    <p className="text-center text-xl text-gray-500">Carregando sugestões, aguarde um momento</p>
+                    <div className="w-1" />
+                    <LoaderCircle className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24" />
+                </div>
+            }
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mx-auto max-w-7xl">
                 {filteredSugestions.map((sugestion) => (
                     <Card

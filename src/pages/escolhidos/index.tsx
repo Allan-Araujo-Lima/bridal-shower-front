@@ -6,7 +6,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LoaderCircle } from "lucide-react";
 
 type ISugestion = {
     id: string;
@@ -56,7 +56,13 @@ export const ChosenItemsPage = () => {
             {
                 localStorage.getItem("name") ?
                     <>
-                        {loading && <p className="text-center text-xl text-gray-500">Carregando presentes, aguarde um momento...</p>}
+                        {loading &&
+                            <div className="flex justify-center items-center">
+                                <p className="text-center text-xl text-gray-500">Carregando presentes, aguarde um momento</p>
+                                <div className="w-1" />
+                                <LoaderCircle className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24" />
+                            </div>
+                        }
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mx-auto max-w-7xl">
                             {chosenItems.length > 0 ? (
                                 chosenItems.map((item) => (
