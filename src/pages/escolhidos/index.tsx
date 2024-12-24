@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
-
 type ISugestion = {
     id: string;
     name: string;
@@ -20,15 +19,19 @@ type ISugestion = {
 export const ChosenItemsPage = () => {
     const [chosenItems, setChosenItems] = useState<ISugestion[]>([]);
     const [userName, setUserName] = useState<string>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const guest = localStorage.getItem("name");
         const fetchChosenItems = async (guest: string) => {
             try {
+                setLoading(true);
                 const response = await api.get(`/sugestions/${guest}`);
                 setChosenItems(response.data);
             } catch (error) {
                 console.error("Erro ao buscar sugestões:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -52,34 +55,37 @@ export const ChosenItemsPage = () => {
             </section>
             {
                 localStorage.getItem("name") ?
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mx-auto max-w-7xl">
-                        {chosenItems.length > 0 ? (
-                            chosenItems.map((item) => (
-                                <Card
-                                    key={item.id}
-                                    className="shadow-lg rounded-lg overflow-hidden bg-white hover:scale-105 transition-transform duration-300 flex flex-col"
-                                >
-                                    <img
-                                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${item.id}.jpg`}
-                                        alt={item.name}
-                                        className="w-full h-48 object-cover"
-                                    />
-                                    <CardHeader className="p-4 text-center min-h-[120px]">
-                                        <CardTitle className="text-xl font-semibold text-[#4D5891]">
-                                            {item.name}
-                                        </CardTitle>
-                                        <CardDescription className="text-sm text-gray-500 mt-2 line-clamp-3">
-                                            {item.description}
-                                        </CardDescription>
-                                    </CardHeader>
-                                </Card>
-                            ))
-                        ) : (
-                            <p className="text-center text-lg text-gray-500 col-span-full">
-                                Nenhum item foi escolhido ainda.
-                            </p>
-                        )}
-                    </div>
+                    <>
+                        {loading && <p className="text-center text-xl text-gray-500">Carregando presentes, aguarde um momento...</p>}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mx-auto max-w-7xl">
+                            {chosenItems.length > 0 ? (
+                                chosenItems.map((item) => (
+                                    <Card
+                                        key={item.id}
+                                        className="shadow-lg rounded-lg overflow-hidden bg-white hover:scale-105 transition-transform duration-300 flex flex-col"
+                                    >
+                                        <img
+                                            src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${item.id}.jpg`}
+                                            alt={item.name}
+                                            className="w-full h-48 object-cover"
+                                        />
+                                        <CardHeader className="p-4 text-center min-h-[120px]">
+                                            <CardTitle className="text-xl font-semibold text-[#4D5891]">
+                                                {item.name}
+                                            </CardTitle>
+                                            <CardDescription className="text-sm text-gray-500 mt-2 line-clamp-3">
+                                                {item.description}
+                                            </CardDescription>
+                                        </CardHeader>
+                                    </Card>
+                                ))
+                            ) : (
+                                <p className="text-center text-lg text-gray-500 col-span-full">
+                                    Nenhum item foi escolhido ainda.
+                                </p>
+                            )}
+                        </div>
+                    </>
                     :
                     <div className="text-center">
                         <p className="text-lg text-gray-500">

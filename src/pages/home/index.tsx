@@ -20,15 +20,19 @@ export const Home = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [selectedCategory, setSelectedCategory] = useState<string>("");
     const [userName, setUserName] = useState<string>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchSugestions = async () => {
             try {
+                setLoading(true);
                 const response = await GetAllSugestions();
                 setSugestions(response);
                 setFilteredSugestions(response);
             } catch (error) {
                 console.log("Erro ao buscar sugestões:", error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchSugestions();
@@ -70,7 +74,7 @@ export const Home = () => {
                     Em 03/12/2018 nós começamos nossa jornada, com seus altos e baixos. Agora, demos um novo passo em nosso relacionamento e resolvemos juntar as escovas 🪥🪥.
                 </h2>
                 <p className="mt-4 text-gray-700 text-lg md:text-xl">
-                    Você que, de alguma forma, foi importante em nossas vidas, está convidado ao nosso <b>Chá de panela</b>. Abaixo, algumas sugestões de presentes:
+                    Você que, de alguma forma, foi importante em nossas vidas, está convidado à nossa <b>Festa de noivado</b>. Abaixo, algumas sugestões de presentes:
                 </p>
             </section>
 
@@ -102,6 +106,7 @@ export const Home = () => {
                 </div>
             </section>
 
+            {loading && <p className="text-center text-xl text-gray-500">Carregando sugestões, aguarde um momento...</p>}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mx-auto max-w-7xl">
                 {filteredSugestions.map((sugestion) => (
                     <Card
