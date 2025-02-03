@@ -1,189 +1,123 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { GetAllSugestions, UpdateSugestion } from "@/sugestionsRequest";
-import { Label } from "@radix-ui/react-label";
-import { LoaderCircle } from "lucide-react";
-import { useEffect, useState } from "react";
-
-type ISugestion = {
-    id: string;
-    name: string;
-    description: string;
-    category: string;
-    guest: string;
-};
-
 export const Home = () => {
-    const [sugestions, setSugestions] = useState<ISugestion[]>([]);
-    const [filteredSugestions, setFilteredSugestions] = useState<ISugestion[]>([]);
-    const [searchQuery, setSearchQuery] = useState<string>("");
-    const [selectedCategory, setSelectedCategory] = useState<string>("");
-    const [userName, setUserName] = useState<string>();
-    const [loading, setLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        const fetchSugestions = async () => {
-            try {
-                setLoading(true);
-                const response = await GetAllSugestions();
-                setSugestions(response);
-                setFilteredSugestions(response);
-            } catch (error) {
-                console.log("Erro ao buscar sugestões:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchSugestions();
-    }, [userName]);
-
-    useEffect(() => {
-        const filtered = sugestions.filter((item) => {
-            const matchesName = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesCategory = selectedCategory ? item.category === selectedCategory : true;
-            return matchesName && matchesCategory;
-        });
-        setFilteredSugestions(filtered);
-    }, [searchQuery, selectedCategory, sugestions]);
-
-    const updateSugestion = async (id: string, name: string | undefined) => {
-        try {
-            const userName = localStorage.getItem("name") || name!;
-            if (!localStorage.getItem("name")) localStorage.setItem("name", userName);
-
-            await UpdateSugestion(id, userName);
-
-            setSugestions((prev) =>
-                prev.map((item) =>
-                    item.id === id ? { ...item, guest: userName } : item
-                )
-            );
-        } catch (error) {
-            console.error("Erro ao atualizar sugestão:", error);
-        }
+    // Color palette array
+    const colors = {
+        lightCyan: '#ecf8f8',
+        linen: '#eee4e1',
+        almond: '#e7d8c9',
+        melon: '#e6beae',
+        taupe: '#b2967d',
     };
 
     return (
-        <main className="p-6 text-[#203165]">
-            <section className="text-center mb-10">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#4D5891]">
-                    Venha celebrar a união de Lara e Allan 💍
+        <div className="min-h-screen" style={{ backgroundColor: colors.lightCyan }}>
+            {/* Hero Section */}
+            <div className="flex flex-col items-center text-center mt-20">
+                <h1 className="text-5xl font-bold mb-4" style={{ color: colors.taupe }}>
+                    A Melhor Maneira de Gerenciar Presentes de Casamento
                 </h1>
-                <h2 className="text-lg md:text-2xl font-light leading-relaxed text-[#203165]">
-                    Em 03/12/2018 nós começamos nossa jornada, com seus altos e baixos. Agora, demos um novo passo em nosso relacionamento e resolvemos juntar as escovas 🪥🪥.
-                </h2>
-                <p className="mt-4 text-gray-700 text-lg md:text-xl">
-                    Você que, de alguma forma, foi importante em nossas vidas, está convidado à nossa <b>Festa de noivado</b>. Abaixo, algumas sugestões de presentes:
+                <p className="text-xl mb-8" style={{ color: colors.taupe }}>
+                    Simplifique a gestão de presentes para o seu casamento com nossa plataforma intuitiva.
                 </p>
-            </section>
-
-            <nav className="mb-6 text-center">
-                <a href="/escolhidos" className="text-[#4D5891] hover:underline text-xl">Ver meus presentes escolhidos</a>
-            </nav>
-
-            <section className="mb-6">
-                <div className="flex flex-col justify-center md:flex-row items-center gap-4">
-                    <Input
-                        type="text"
-                        placeholder="Busque por nome do presente..."
-                        className="w-full md:w-1/3"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-
-                    <select
-                        className="w-full md:w-1/3 p-2 border border-gray-300 rounded-md"
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
+                <div className="space-x-4">
+                    <button
+                        className="px-6 py-3 rounded-lg transition duration-300"
+                        style={{ backgroundColor: colors.melon, color: colors.taupe }}
+                        onMouseOver={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = colors.almond)}
+                        onMouseOut={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = colors.melon)}
                     >
-                        <option value="">Todas as categorias</option>
-                        <option value="Cozinha">Cozinha</option>
-                        <option value="Área de Serviço">Área de Serviço</option>
-                        <option value="Quarto">Quarto</option>
-                        <option value="Banheiro">Banheiro</option>
-                    </select>
-                </div>
-            </section>
-
-            {loading &&
-                <div className="flex justify-center items-center">
-                    <p className="text-center text-xl text-gray-500">Carregando sugestões, aguarde um momento</p>
-                    <div className="w-1" />
-                    <LoaderCircle className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24" />
-                </div>
-            }
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mx-auto max-w-7xl">
-                {filteredSugestions.map((sugestion) => (
-                    <Card
-                        key={sugestion.id}
-                        className="shadow-lg rounded-lg overflow-hidden bg-white hover:scale-105 transition-transform duration-300 flex flex-col"
+                        Comece Agora
+                    </button>
+                    <button
+                        className="px-6 py-3 rounded-lg border transition duration-300"
+                        style={{ borderColor: colors.taupe, color: colors.taupe }}
+                        onMouseOver={(e) => {
+                            (e.target as HTMLButtonElement).style.backgroundColor = colors.taupe;
+                            (e.target as HTMLButtonElement).style.color = colors.lightCyan;
+                        }}
+                        onMouseOut={(e) => {
+                            (e.target as HTMLButtonElement).style.backgroundColor = 'transparent';
+                            (e.target as HTMLButtonElement).style.color = colors.taupe;
+                        }}
                     >
-                        <img
-                            src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${sugestion.id}.jpg`}
-                            alt={sugestion.name}
-                            className="w-full h-48 object-cover"
-                        />
-                        <div className="flex-grow">
-                            <CardHeader className="p-4 text-center min-h-[120px]">
-                                <CardTitle className="text-xl font-semibold text-[#4D5891]">
-                                    {sugestion.name}
-                                </CardTitle>
-                                <CardDescription className="text-sm text-gray-500 mt-2 line-clamp-3">
-                                    {sugestion.description}
-                                </CardDescription>
-                            </CardHeader>
-                        </div>
-                        <CardFooter className="mt-auto">
-                            <Dialog>
-                                <DialogTrigger asChild className="w-full h-fit">
-                                    <Button
-                                        disabled={sugestion.guest ? true : false}
-                                        variant="outline"
-                                        className="w-full bg-[#4D5891] text-white font-medium py-2 rounded-md shadow-md hover:bg-[#3C4678] transition-colors duration-200"
-                                    >
-                                        {sugestion.guest ? "Já escolhido" : "Quero presentear"}
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent className="sm:max-w-[425px]">
-                                    <DialogHeader>
-                                        <DialogTitle>{localStorage.getItem("name") ? "Confirmar o presente?" : "Digite seu nome completo"}</DialogTitle>
-                                        <DialogDescription>
-                                            Item selecionado: <b>{sugestion.name}</b>
-                                            <br />
-                                            Serve para reservamos nossa sugestão especialmente para você!
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    {
-                                        !localStorage.getItem("name") ?
-                                            <div className="grid gap-4 py-4">
-                                                <div className="grid grid-cols-4 items-center gap-4">
-                                                    <Label htmlFor="name" className="text-left">
-                                                        Nome:
-                                                    </Label>
-                                                    <Input id="name" className="col-span-3" onChange={(e) => setUserName(e.target.value.toLowerCase())} />
-                                                </div>
-                                            </div>
-                                            :
-                                            null
-                                    }
-                                    <DialogFooter>
-                                        <DialogClose>
-                                            <Button
-                                                onClick={() => updateSugestion(sugestion.id, userName)}
-                                                className="w-full bg-[#4D5891] text-white font-medium py-2 rounded-md shadow-md hover:bg-[#3C4678] transition-colors duration-200"
-                                            >
-                                                Salvar sugestão
-                                            </Button>
-                                        </DialogClose>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
-                        </CardFooter>
-                    </Card>
-                ))}
+                        Saiba Mais
+                    </button>
+                </div>
             </div>
-        </main>
+
+            {/* Image Section */}
+            <div className="w-full max-w-6xl mt-20 mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="p-6 rounded-lg shadow-lg flex items-center justify-center" style={{ backgroundColor: colors.linen }}>
+                        <img
+                            src="https://via.placeholder.com/500x300"
+                            alt="Exemplo de Lista de Presentes"
+                            className="rounded-lg"
+                        />
+                    </div>
+                    <div className="p-6 rounded-lg shadow-lg flex items-center justify-center" style={{ backgroundColor: colors.linen }}>
+                        <img
+                            src="https://via.placeholder.com/500x300"
+                            alt="Integração com Lojas"
+                            className="rounded-lg"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Features Section */}
+            <div id="features" className="w-full max-w-6xl mt-20 mx-auto">
+                <h2 className="text-3xl font-bold text-center mb-8" style={{ color: colors.taupe }}>Funcionalidades</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="p-6 rounded-lg shadow-lg" style={{ backgroundColor: colors.linen }}>
+                        <h3 className="text-xl font-bold mb-4" style={{ color: colors.taupe }}>Lista de Presentes</h3>
+                        <p style={{ color: colors.taupe }}>Crie e gerencie sua lista de presentes de forma fácil e rápida.</p>
+                    </div>
+                    <div className="p-6 rounded-lg shadow-lg" style={{ backgroundColor: colors.linen }}>
+                        <h3 className="text-xl font-bold mb-4" style={{ color: colors.taupe }}>Integração com Lojas</h3>
+                        <p style={{ color: colors.taupe }}>Conecte-se com as melhores lojas e facilite a compra de presentes.</p>
+                    </div>
+                    <div className="p-6 rounded-lg shadow-lg" style={{ backgroundColor: colors.linen }}>
+                        <h3 className="text-xl font-bold mb-4" style={{ color: colors.taupe }}>Acompanhamento em Tempo Real</h3>
+                        <p style={{ color: colors.taupe }}>Acompanhe os presentes recebidos em tempo real.</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Testimonials Section */}
+            <div className="w-full max-w-6xl mt-20 mx-auto">
+                <h2 className="text-3xl font-bold text-center mb-8" style={{ color: colors.taupe }}>O Que Dizem Nossos Clientes</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="p-6 rounded-lg shadow-lg" style={{ backgroundColor: colors.linen }}>
+                        <p className="italic" style={{ color: colors.taupe }}>"A plataforma facilitou muito a organização dos presentes do nosso casamento. Recomendo!"</p>
+                        <p className="font-bold mt-4" style={{ color: colors.taupe }}>- Ana e João</p>
+                    </div>
+                    <div className="p-6 rounded-lg shadow-lg" style={{ backgroundColor: colors.linen }}>
+                        <p className="italic" style={{ color: colors.taupe }}>"Adoramos a integração com as lojas, foi muito prático para os nossos convidados."</p>
+                        <p className="font-bold mt-4" style={{ color: colors.taupe }}>- Maria e Pedro</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Call to Action Section */}
+            <div className="w-full max-w-6xl mt-20 mx-auto p-8 rounded-lg text-center" style={{ backgroundColor: colors.melon }}>
+                <h2 className="text-3xl font-bold mb-4" style={{ color: colors.taupe }}>Pronto para Simplificar Seu Casamento?</h2>
+                <p className="text-xl mb-8" style={{ color: colors.taupe }}>Comece agora e torne a gestão de presentes a parte mais fácil do seu planejamento.</p>
+                <button
+                    className="px-6 py-3 rounded-lg transition duration-300"
+                    style={{ backgroundColor: colors.taupe, color: colors.lightCyan }}
+                    onMouseOver={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = colors.almond)}
+                    onMouseOut={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = colors.taupe)}
+                >
+                    Comece Agora
+                </button>
+            </div>
+
+            {/* Footer */}
+            <footer className="w-full max-w-6xl mt-20 py-6 mx-auto border-t" style={{ borderColor: colors.almond }}>
+                <div className="text-center" style={{ color: colors.taupe }}>
+                    © 2023 Presentes de Casamento. Todos os direitos reservados.
+                </div>
+            </footer>
+        </div>
     );
 };

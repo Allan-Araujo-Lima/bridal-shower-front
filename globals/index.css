@@ -7,8 +7,7 @@ body {
     overflow-x: hidden;
     width: auto;
     height: 100%;
-    background: rgb(233,239,255);
-    background: linear-gradient(45deg, rgba(233,239,255,1) 0%, rgba(187,194,255,1) 77%);
+    background: #ecf8f8;
 }
 
 h1 {
