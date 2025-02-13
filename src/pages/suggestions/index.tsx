@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { GetAllSugestions, UpdateSugestion } from "@/sugestionsRequest";
+import { GetAllSugestions, UpdateSugestion } from "@/requests/suggestions";
 import { Label } from "@radix-ui/react-label";
 import { LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";

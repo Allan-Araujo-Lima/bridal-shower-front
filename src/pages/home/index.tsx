@@ -1,3 +1,7 @@
+import hands from "../../assets/home/hands.jpg"
+import gifts from "../../assets/home/gifts.jpg"
+import buying from "../../assets/home/buying.jpg"
+
 export const Home = () => {
     // Color palette array
     const colors = {
@@ -11,52 +15,45 @@ export const Home = () => {
     return (
         <div className="min-h-screen" style={{ backgroundColor: colors.lightCyan }}>
             {/* Hero Section */}
-            <div className="flex flex-col items-center text-center mt-20">
-                <h1 className="text-5xl font-bold mb-4" style={{ color: colors.taupe }}>
-                    A Melhor Maneira de Gerenciar Presentes de Casamento
-                </h1>
-                <p className="text-xl mb-8" style={{ color: colors.taupe }}>
-                    Simplifique a gestão de presentes para o seu casamento com nossa plataforma intuitiva.
-                </p>
-                <div className="space-x-4">
-                    <button
-                        className="px-6 py-3 rounded-lg transition duration-300"
-                        style={{ backgroundColor: colors.melon, color: colors.taupe }}
-                        onMouseOver={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = colors.almond)}
-                        onMouseOut={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = colors.melon)}
-                    >
-                        Comece Agora
+            <div className="absolute inset-0 pointer-events-none" />
+
+            <div className="max-w-7xl w-full flex flex-col md:flex-row items-center justify-self-center">
+                <div className="md:w-1/2 text-left space-y-6 mt-4 ml-4">
+                    <p className="text-xs uppercase tracking-wide text-gray-500">A vida é um evento</p>
+                    <h1 className="text-4xl font-serif font-bold text-gray-800">
+                        Criando o <br /> Melhor Dia de Todos
+                    </h1>
+                    <p className="text-gray-600">
+                        Com a <b>Wedding Now</b> você consegue gerenciar com facilidade as suas sugestões de presentes do seu evento, explore mais clicando no botão abaixo.
+                    </p>
+                    <button className="px-6 py-2 border border-[#e6beae] text-[#e6beae] rounded-full hover:bg-[#e6beae] hover:text-white transition">
+                        Explore
                     </button>
-                    <button
-                        className="px-6 py-3 rounded-lg border transition duration-300"
-                        style={{ borderColor: colors.taupe, color: colors.taupe }}
-                        onMouseOver={(e) => {
-                            (e.target as HTMLButtonElement).style.backgroundColor = colors.taupe;
-                            (e.target as HTMLButtonElement).style.color = colors.lightCyan;
-                        }}
-                        onMouseOut={(e) => {
-                            (e.target as HTMLButtonElement).style.backgroundColor = 'transparent';
-                            (e.target as HTMLButtonElement).style.color = colors.taupe;
-                        }}
-                    >
-                        Saiba Mais
-                    </button>
+                </div>
+
+                <div className="md:w-1/2 relative mt-10 md:mt-0 flex justify-center">
+                    <div className="relative">
+                        <img
+                            src={hands}
+                            alt="Wedding Couple"
+                            className="rounded-lg shadow-lg object-cover w-full max-w-md"
+                        />
+                    </div>
                 </div>
             </div>
 
-            {/* Image Section */}
             <div className="w-full max-w-6xl mt-20 mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="p-6 rounded-lg shadow-lg flex items-center justify-center" style={{ backgroundColor: colors.linen }}>
                         <img
-                            src="https://via.placeholder.com/500x300"
+                            src={gifts}
                             alt="Exemplo de Lista de Presentes"
                             className="rounded-lg"
                         />
                     </div>
                     <div className="p-6 rounded-lg shadow-lg flex items-center justify-center" style={{ backgroundColor: colors.linen }}>
                         <img
-                            src="https://via.placeholder.com/500x300"
+                            src={buying}
                             alt="Integração com Lojas"
                             className="rounded-lg"
                         />

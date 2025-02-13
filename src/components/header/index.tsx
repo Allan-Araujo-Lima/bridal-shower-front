@@ -30,8 +30,13 @@ export const Header = () => {
 
     useEffect(() => {
         const isAuthenticated = async () => {
+            const token = localStorage.getItem('accessToken')
             try {
-                await api.get('/auth/user');
+                await api.get('/auth/user', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 return setAuthenticated(true);
             } catch (error: any) {
                 console.log(error.response)
